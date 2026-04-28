@@ -5,9 +5,10 @@ ENV ASPNETCORE_URLS=http://+:8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["HygieneHub.API.csproj", "./"]
-RUN dotnet restore "HygieneHub.API.csproj"
-COPY . .
+COPY ["HygieneHub.API/HygieneHub.API.csproj", "HygieneHub.API/"]
+RUN dotnet restore "HygieneHub.API/HygieneHub.API.csproj"
+COPY HygieneHub.API/ HygieneHub.API/
+WORKDIR "/src/HygieneHub.API"
 RUN dotnet publish "HygieneHub.API.csproj" -c Release -o /app/publish --no-restore
 
 FROM base AS final
