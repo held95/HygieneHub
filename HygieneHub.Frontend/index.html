@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HygieneHub — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-icon">🧼</span>
+      <div>
+        HygieneHub
+        <div class="logo-sub">Gestão de Produtos</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="badge-api">ASP.NET Core 8 + PostgreSQL</span>
+    </div>
+  </header>
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <h1 class="page-title">Dashboard de <span>Produtos</span></h1>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📦</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-label">Total Produtos</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">🏷️</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-categories">—</div>
+          <div class="stat-label">Categorias</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">💰</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-avg-price">—</div>
+          <div class="stat-label">Preço Médio</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">⚠️</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-low-stock">—</div>
+          <div class="stat-label">Estoque Baixo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Por Categoria</h3>
+        <div class="chart-wrap">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Top Marcas</h3>
+        <div class="chart-wrap">
+          <canvas id="brandsChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Estoque por Produto (Top 10)</h3>
+        <div class="chart-wrap">
+          <canvas id="stockChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <h2>Catálogo de Produtos</h2>
+        <div class="table-controls">
+          <input type="text" id="search-input" class="search-input" placeholder="🔍 Buscar por nome ou marca…" />
+          <select id="category-filter" class="filter-select">
+            <option value="">Todas as categorias</option>
+            <option value="Sabonete">Sabonete</option>
+            <option value="Shampoo">Shampoo</option>
+            <option value="Condicionador">Condicionador</option>
+          </select>
+          <button id="btn-new" class="btn btn-primary">+ Novo Produto</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome</th>
+              <th>Categoria</th>
+              <th>Marca</th>
+              <th>Preço</th>
+              <th>Estoque</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody">
+            <tr><td colspan="7" class="empty-state">Carregando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── Modal ── -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Novo Produto</h2>
+        <button id="modal-close" class="modal-close" aria-label="Fechar">✕</button>
+      </div>
+      <form id="product-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="field-name">Nome do Produto *</label>
+            <input id="field-name" class="form-control" type="text" placeholder="Ex: Sabonete Dove Original" required maxlength="150" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="field-category">Categoria *</label>
+              <select id="field-category" class="form-control" required>
+                <option value="">Selecione…</option>
+                <option value="Sabonete">Sabonete</option>
+                <option value="Shampoo">Shampoo</option>
+                <option value="Condicionador">Condicionador</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="field-brand">Marca *</label>
+              <input id="field-brand" class="form-control" type="text" placeholder="Ex: Dove" required maxlength="100" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="field-price">Preço (R$) *</label>
+              <input id="field-price" class="form-control" type="number" min="0.01" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="form-group">
+              <label for="field-stock">Quantidade em Estoque</label>
+              <input id="field-stock" class="form-control" type="number" min="0" placeholder="0" value="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="field-description">Descrição</label>
+            <textarea id="field-description" class="form-control" placeholder="Descreva o produto…" maxlength="500"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modal-cancel" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Loading ── -->
+  <div id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div id="toast" class="toast"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

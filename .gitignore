@@ -1,0 +1,24 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.db
+*.db-shm
+*.db-wal
+
+## Environment
+.env
+.env.local
+appsettings.Development.json
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Node (caso use ferramentas de build frontend)
+node_modules/
+
+## Publish
+publish/
