@@ -1,5 +1,4 @@
-// Troque pela URL do Railway após o deploy
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = window.API_BASE_URL || 'https://hygienehub-api.onrender.com';
 
 const api = {
   async getProducts(search = '', category = '') {
