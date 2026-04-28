@@ -28,7 +28,10 @@ builder.Services.AddCors(options =>
             .ToArray();
 
         if (origins.Length > 0)
-            policy.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins(origins)
+                  .SetIsOriginAllowedToAllowWildcardSubdomains()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
         else
             policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
