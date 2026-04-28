@@ -1,0 +1,6 @@
+{
+  "outputDirectory": "HygieneHub.Frontend",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
